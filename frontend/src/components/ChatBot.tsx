@@ -70,7 +70,7 @@ const QUICK_CHIPS = [
   "Market price trend",
 ];
 
-export default function ChatBot() {
+export function ChatBot() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
