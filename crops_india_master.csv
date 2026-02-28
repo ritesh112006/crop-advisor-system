@@ -1,0 +1,201 @@
+crop_name,state,temp_min_c,temp_max_c,ideal_n,ideal_p,ideal_k,ph_min,ph_max,soil_moisture_min,soil_moisture_max
+Rice,Andhra Pradesh,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Andhra Pradesh,10,25,120,60,40,6.0,7.5,40,70
+Maize,Andhra Pradesh,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Andhra Pradesh,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Andhra Pradesh,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Andhra Pradesh,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Andhra Pradesh,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Andhra Pradesh,18,30,20,40,20,6.0,7.5,30,60
+Millets,Andhra Pradesh,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Andhra Pradesh,15,30,120,60,60,5.5,7.0,50,80
+Rice,Assam,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Assam,10,25,120,60,40,6.0,7.5,40,70
+Maize,Assam,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Assam,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Assam,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Assam,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Assam,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Assam,18,30,20,40,20,6.0,7.5,30,60
+Millets,Assam,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Assam,15,30,120,60,60,5.5,7.0,50,80
+Rice,Bihar,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Bihar,10,25,120,60,40,6.0,7.5,40,70
+Maize,Bihar,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Bihar,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Bihar,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Bihar,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Bihar,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Bihar,18,30,20,40,20,6.0,7.5,30,60
+Millets,Bihar,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Bihar,15,30,120,60,60,5.5,7.0,50,80
+Rice,Chhattisgarh,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Chhattisgarh,10,25,120,60,40,6.0,7.5,40,70
+Maize,Chhattisgarh,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Chhattisgarh,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Chhattisgarh,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Chhattisgarh,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Chhattisgarh,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Chhattisgarh,18,30,20,40,20,6.0,7.5,30,60
+Millets,Chhattisgarh,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Chhattisgarh,15,30,120,60,60,5.5,7.0,50,80
+Rice,Gujarat,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Gujarat,10,25,120,60,40,6.0,7.5,40,70
+Maize,Gujarat,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Gujarat,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Gujarat,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Gujarat,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Gujarat,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Gujarat,18,30,20,40,20,6.0,7.5,30,60
+Millets,Gujarat,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Gujarat,15,30,120,60,60,5.5,7.0,50,80
+Rice,Haryana,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Haryana,10,25,120,60,40,6.0,7.5,40,70
+Maize,Haryana,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Haryana,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Haryana,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Haryana,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Haryana,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Haryana,18,30,20,40,20,6.0,7.5,30,60
+Millets,Haryana,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Haryana,15,30,120,60,60,5.5,7.0,50,80
+Rice,Himachal Pradesh,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Himachal Pradesh,10,25,120,60,40,6.0,7.5,40,70
+Maize,Himachal Pradesh,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Himachal Pradesh,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Himachal Pradesh,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Himachal Pradesh,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Himachal Pradesh,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Himachal Pradesh,18,30,20,40,20,6.0,7.5,30,60
+Millets,Himachal Pradesh,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Himachal Pradesh,15,30,120,60,60,5.5,7.0,50,80
+Rice,Jharkhand,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Jharkhand,10,25,120,60,40,6.0,7.5,40,70
+Maize,Jharkhand,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Jharkhand,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Jharkhand,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Jharkhand,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Jharkhand,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Jharkhand,18,30,20,40,20,6.0,7.5,30,60
+Millets,Jharkhand,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Jharkhand,15,30,120,60,60,5.5,7.0,50,80
+Rice,Karnataka,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Karnataka,10,25,120,60,40,6.0,7.5,40,70
+Maize,Karnataka,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Karnataka,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Karnataka,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Karnataka,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Karnataka,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Karnataka,18,30,20,40,20,6.0,7.5,30,60
+Millets,Karnataka,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Karnataka,15,30,120,60,60,5.5,7.0,50,80
+Rice,Kerala,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Kerala,10,25,120,60,40,6.0,7.5,40,70
+Maize,Kerala,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Kerala,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Kerala,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Kerala,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Kerala,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Kerala,18,30,20,40,20,6.0,7.5,30,60
+Millets,Kerala,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Kerala,15,30,120,60,60,5.5,7.0,50,80
+Rice,Madhya Pradesh,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Madhya Pradesh,10,25,120,60,40,6.0,7.5,40,70
+Maize,Madhya Pradesh,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Madhya Pradesh,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Madhya Pradesh,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Madhya Pradesh,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Madhya Pradesh,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Madhya Pradesh,18,30,20,40,20,6.0,7.5,30,60
+Millets,Madhya Pradesh,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Madhya Pradesh,15,30,120,60,60,5.5,7.0,50,80
+Rice,Maharashtra,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Maharashtra,10,25,120,60,40,6.0,7.5,40,70
+Maize,Maharashtra,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Maharashtra,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Maharashtra,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Maharashtra,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Maharashtra,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Maharashtra,18,30,20,40,20,6.0,7.5,30,60
+Millets,Maharashtra,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Maharashtra,15,30,120,60,60,5.5,7.0,50,80
+Rice,Odisha,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Odisha,10,25,120,60,40,6.0,7.5,40,70
+Maize,Odisha,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Odisha,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Odisha,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Odisha,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Odisha,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Odisha,18,30,20,40,20,6.0,7.5,30,60
+Millets,Odisha,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Odisha,15,30,120,60,60,5.5,7.0,50,80
+Rice,Punjab,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Punjab,10,25,120,60,40,6.0,7.5,40,70
+Maize,Punjab,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Punjab,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Punjab,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Punjab,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Punjab,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Punjab,18,30,20,40,20,6.0,7.5,30,60
+Millets,Punjab,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Punjab,15,30,120,60,60,5.5,7.0,50,80
+Rice,Rajasthan,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Rajasthan,10,25,120,60,40,6.0,7.5,40,70
+Maize,Rajasthan,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Rajasthan,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Rajasthan,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Rajasthan,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Rajasthan,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Rajasthan,18,30,20,40,20,6.0,7.5,30,60
+Millets,Rajasthan,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Rajasthan,15,30,120,60,60,5.5,7.0,50,80
+Rice,Tamil Nadu,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Tamil Nadu,10,25,120,60,40,6.0,7.5,40,70
+Maize,Tamil Nadu,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Tamil Nadu,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Tamil Nadu,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Tamil Nadu,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Tamil Nadu,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Tamil Nadu,18,30,20,40,20,6.0,7.5,30,60
+Millets,Tamil Nadu,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Tamil Nadu,15,30,120,60,60,5.5,7.0,50,80
+Rice,Telangana,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Telangana,10,25,120,60,40,6.0,7.5,40,70
+Maize,Telangana,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Telangana,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Telangana,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Telangana,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Telangana,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Telangana,18,30,20,40,20,6.0,7.5,30,60
+Millets,Telangana,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Telangana,15,30,120,60,60,5.5,7.0,50,80
+Rice,Uttar Pradesh,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Uttar Pradesh,10,25,120,60,40,6.0,7.5,40,70
+Maize,Uttar Pradesh,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Uttar Pradesh,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Uttar Pradesh,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Uttar Pradesh,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Uttar Pradesh,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Uttar Pradesh,18,30,20,40,20,6.0,7.5,30,60
+Millets,Uttar Pradesh,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Uttar Pradesh,15,30,120,60,60,5.5,7.0,50,80
+Rice,Uttarakhand,20,35,120,60,60,5.5,7.0,60,95
+Wheat,Uttarakhand,10,25,120,60,40,6.0,7.5,40,70
+Maize,Uttarakhand,18,32,100,50,50,5.8,7.2,40,70
+Cotton,Uttarakhand,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,Uttarakhand,20,38,180,90,90,6.0,7.8,60,95
+Soybean,Uttarakhand,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,Uttarakhand,22,32,25,50,75,6.0,7.5,40,70
+Pulses,Uttarakhand,18,30,20,40,20,6.0,7.5,30,60
+Millets,Uttarakhand,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,Uttarakhand,15,30,120,60,60,5.5,7.0,50,80
+Rice,West Bengal,20,35,120,60,60,5.5,7.0,60,95
+Wheat,West Bengal,10,25,120,60,40,6.0,7.5,40,70
+Maize,West Bengal,18,32,100,50,50,5.8,7.2,40,70
+Cotton,West Bengal,20,38,90,45,45,6.0,7.5,30,60
+Sugarcane,West Bengal,20,38,180,90,90,6.0,7.8,60,95
+Soybean,West Bengal,20,30,30,60,40,6.0,7.0,40,70
+Groundnut,West Bengal,22,32,25,50,75,6.0,7.5,40,70
+Pulses,West Bengal,18,30,20,40,20,6.0,7.5,30,60
+Millets,West Bengal,20,35,40,20,20,5.5,7.5,20,50
+Vegetables,West Bengal,15,30,120,60,60,5.5,7.0,50,80
