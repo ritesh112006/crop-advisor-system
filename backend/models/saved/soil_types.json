@@ -1,0 +1,76 @@
+{
+  "soil_types": [
+    "Black Cotton",
+    "Clay",
+    "Clay Loam",
+    "Loamy",
+    "Red Soil",
+    "Sandy",
+    "Sandy Clay",
+    "Sandy Loam",
+    "Silty Clay",
+    "Silty Loam"
+  ],
+  "crop_soil_map": {
+    "Rice": [
+      "Clay",
+      "Clay Loam",
+      "Silty Clay",
+      "Silty Loam"
+    ],
+    "Wheat": [
+      "Loamy",
+      "Clay Loam",
+      "Sandy Loam",
+      "Black Cotton"
+    ],
+    "Maize": [
+      "Loamy",
+      "Sandy Loam",
+      "Sandy",
+      "Clay Loam"
+    ],
+    "Cotton": [
+      "Black Cotton",
+      "Clay Loam",
+      "Sandy Clay",
+      "Loamy"
+    ],
+    "Sugarcane": [
+      "Loamy",
+      "Clay Loam",
+      "Silty Loam",
+      "Sandy Loam"
+    ],
+    "Soybean": [
+      "Loamy",
+      "Sandy Loam",
+      "Clay Loam",
+      "Silty Loam"
+    ],
+    "Groundnut": [
+      "Sandy Loam",
+      "Sandy",
+      "Loamy",
+      "Red Soil"
+    ],
+    "Pulses": [
+      "Sandy Loam",
+      "Loamy",
+      "Clay Loam",
+      "Red Soil"
+    ],
+    "Millets": [
+      "Sandy",
+      "Sandy Loam",
+      "Loamy",
+      "Red Soil"
+    ],
+    "Vegetables": [
+      "Loamy",
+      "Silty Loam",
+      "Sandy Loam",
+      "Clay Loam"
+    ]
+  }
+}

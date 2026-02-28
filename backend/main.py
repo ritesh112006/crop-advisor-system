@@ -33,23 +33,52 @@ MODELS_DIR = os.path.join(os.path.dirname(__file__), "models", "saved")
 crop_model = None
 crop_scaler = None
 state_encoder = None
+soil_encoder = None
 crop_encoder = None
 price_model = None
 price_crop_enc = None
 price_state_enc = None
 lag_cache = None
 weather_lookup = None
+soil_types_data = None
+
+# Soil type compatibility (matches train_models.py)
+CROP_SOIL_TYPES = {
+    "Rice":       ["Clay", "Clay Loam", "Silty Clay", "Silty Loam"],
+    "Wheat":      ["Loamy", "Clay Loam", "Sandy Loam", "Black Cotton"],
+    "Maize":      ["Loamy", "Sandy Loam", "Sandy", "Clay Loam"],
+    "Cotton":     ["Black Cotton", "Clay Loam", "Sandy Clay", "Loamy"],
+    "Sugarcane":  ["Loamy", "Clay Loam", "Silty Loam", "Sandy Loam"],
+    "Soybean":    ["Loamy", "Sandy Loam", "Clay Loam", "Silty Loam"],
+    "Groundnut":  ["Sandy Loam", "Sandy", "Loamy", "Red Soil"],
+    "Pulses":     ["Sandy Loam", "Loamy", "Clay Loam", "Red Soil"],
+    "Millets":    ["Sandy", "Sandy Loam", "Loamy", "Red Soil"],
+    "Vegetables": ["Loamy", "Silty Loam", "Sandy Loam", "Clay Loam"],
+}
+
+def get_soil_compat(crop: str, soil: str) -> float:
+    soils = CROP_SOIL_TYPES.get(crop, [])
+    if not soils or soil not in soils:
+        return 0.3
+    idx = soils.index(soil)
+    return [1.0, 0.9, 0.75, 0.75][min(idx, 3)]
 
 @app.on_event("startup")
 async def load_models():
-    global crop_model, crop_scaler, state_encoder, crop_encoder
-    global price_model, price_crop_enc, price_state_enc, lag_cache, weather_lookup
+    global crop_model, crop_scaler, state_encoder, soil_encoder, crop_encoder
+    global price_model, price_crop_enc, price_state_enc, lag_cache, weather_lookup, soil_types_data
+    import json
     try:
         crop_model    = joblib.load(os.path.join(MODELS_DIR, "crop_model.pkl"))
         crop_scaler   = joblib.load(os.path.join(MODELS_DIR, "crop_scaler.pkl"))
         state_encoder = joblib.load(os.path.join(MODELS_DIR, "state_encoder.pkl"))
+        soil_encoder  = joblib.load(os.path.join(MODELS_DIR, "soil_encoder.pkl"))
         crop_encoder  = joblib.load(os.path.join(MODELS_DIR, "crop_encoder.pkl"))
-        print("✓ Crop recommendation model loaded")
+        soil_json = os.path.join(MODELS_DIR, "soil_types.json")
+        if os.path.exists(soil_json):
+            with open(soil_json) as f:
+                soil_types_data = json.load(f)
+        print("✓ Crop recommendation model loaded (with soil_type)")
 
         price_model     = joblib.load(os.path.join(MODELS_DIR, "price_model.pkl"))
         price_crop_enc  = joblib.load(os.path.join(MODELS_DIR, "price_crop_encoder.pkl"))
@@ -121,30 +150,64 @@ async def health():
     }
 
 
+@app.get("/api/soil-types")
+async def get_soil_types():
+    """Return all available soil types for the dropdown."""
+    if soil_types_data:
+        return soil_types_data
+    default_soils = ["Black Cotton", "Clay", "Clay Loam", "Loamy", "Red Soil",
+                     "Sandy", "Sandy Clay", "Sandy Loam", "Silty Clay", "Silty Loam"]
+    return {"soil_types": default_soils, "crop_soil_map": CROP_SOIL_TYPES}
+
+
 @app.post("/api/recommend-crops")
 async def recommend_crops(req: CropRecommendRequest):
     if crop_model is None:
         raise HTTPException(status_code=503, detail="Models not loaded. Run train_models.py first.")
     try:
-        # Encode state (handle unseen states gracefully)
+        # Encode state
         known_states = list(state_encoder.classes_)
         state_to_use = req.state if req.state in known_states else known_states[0]
         state_enc_val = state_encoder.transform([state_to_use])[0]
 
-        features = np.array([[req.N, req.P, req.K, req.temperature, req.pH, req.moisture, state_enc_val]])
+        # Encode soil_type
+        known_soils = list(soil_encoder.classes_) if soil_encoder else []
+        soil_to_use = req.soil_type if req.soil_type in known_soils else (known_soils[0] if known_soils else "Loamy")
+        soil_enc_val = soil_encoder.transform([soil_to_use])[0] if soil_encoder else 0
+
+        # Build feature vector: N, P, K, temperature, pH, moisture, state_enc, soil_type_enc, soil_compat
+        # soil_compat will be computed per-crop in post-processing, use 0.75 as neutral for initial prediction
+        features = np.array([[req.N, req.P, req.K, req.temperature, req.pH, req.moisture,
+                               state_enc_val, soil_enc_val, 0.75]])
         features_scaled = crop_scaler.transform(features)
         proba = crop_model.predict_proba(features_scaled)[0]
 
-        # Top 4 crops
-        top4_idx = np.argsort(proba)[::-1][:4]
-        results = []
-        for idx in top4_idx:
+        # Top 6 candidates; re-rank with soil compatibility boost
+        top6_idx = np.argsort(proba)[::-1][:6]
+        candidates = []
+        for idx in top6_idx:
             crop_name = crop_encoder.inverse_transform([idx])[0]
-            confidence = round(float(proba[idx]) * 100, 1)
+            base_prob = float(proba[idx])
+            compat = get_soil_compat(crop_name, req.soil_type)
+            # Boost probability by soil compatibility
+            boosted_prob = base_prob * (0.5 + 0.5 * compat)
+            candidates.append((crop_name, base_prob, boosted_prob, compat))
+
+        # Sort by boosted probability
+        candidates.sort(key=lambda x: x[2], reverse=True)
+        top4 = candidates[:4]
+
+        results = []
+        for crop_name, base_prob, boosted_prob, compat in top4:
+            # Display confidence as boosted %, capped at 99%
+            confidence = min(round(boosted_prob * 100, 1), 99.0)
             info = CROP_INFO.get(crop_name, {})
+            soil_match = "✅ Best Match" if compat >= 1.0 else ("✓ Compatible" if compat >= 0.75 else "⚠ Sub-optimal")
             results.append({
                 "crop": crop_name,
                 "confidence": confidence,
+                "soilCompatibility": soil_match,
+                "soilScore": round(compat * 100),
                 "expectedYield": CROP_YIELDS.get(crop_name, "N/A"),
                 "marketPrice": CROP_PRICES.get(crop_name, 2500),
                 "sowingPeriod": info.get("sowing", "N/A"),
@@ -152,7 +215,12 @@ async def recommend_crops(req: CropRecommendRequest):
                 "fertilizer": info.get("fertilizer", "NPK as recommended"),
                 "riskLevel": info.get("risk", "Medium"),
             })
-        return {"recommendations": results, "state": req.state, "status": "success"}
+        return {
+            "recommendations": results,
+            "state": req.state,
+            "soilType": req.soil_type,
+            "status": "success"
+        }
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))

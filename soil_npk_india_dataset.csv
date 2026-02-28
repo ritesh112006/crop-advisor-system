@@ -1,0 +1,121 @@
+state,soil_type,nitrogen_kg_ha_min,nitrogen_kg_ha_max,phosphorus_kg_ha_min,phosphorus_kg_ha_max,potassium_kg_ha_min,potassium_kg_ha_max,ph_min,ph_max,soil_moisture_min_pct,soil_moisture_max_pct
+Andhra Pradesh,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Andhra Pradesh,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Andhra Pradesh,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Andhra Pradesh,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Andhra Pradesh,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Andhra Pradesh,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Assam,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Assam,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Assam,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Assam,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Assam,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Assam,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Bihar,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Bihar,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Bihar,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Bihar,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Bihar,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Bihar,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Chhattisgarh,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Chhattisgarh,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Chhattisgarh,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Chhattisgarh,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Chhattisgarh,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Chhattisgarh,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Gujarat,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Gujarat,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Gujarat,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Gujarat,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Gujarat,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Gujarat,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Haryana,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Haryana,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Haryana,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Haryana,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Haryana,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Haryana,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Himachal Pradesh,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Himachal Pradesh,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Himachal Pradesh,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Himachal Pradesh,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Himachal Pradesh,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Himachal Pradesh,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Jharkhand,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Jharkhand,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Jharkhand,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Jharkhand,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Jharkhand,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Jharkhand,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Karnataka,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Karnataka,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Karnataka,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Karnataka,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Karnataka,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Karnataka,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Kerala,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Kerala,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Kerala,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Kerala,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Kerala,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Kerala,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Madhya Pradesh,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Madhya Pradesh,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Madhya Pradesh,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Madhya Pradesh,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Madhya Pradesh,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Madhya Pradesh,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Maharashtra,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Maharashtra,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Maharashtra,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Maharashtra,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Maharashtra,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Maharashtra,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Odisha,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Odisha,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Odisha,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Odisha,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Odisha,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Odisha,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Punjab,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Punjab,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Punjab,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Punjab,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Punjab,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Punjab,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Rajasthan,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Rajasthan,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Rajasthan,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Rajasthan,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Rajasthan,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Rajasthan,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Tamil Nadu,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Tamil Nadu,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Tamil Nadu,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Tamil Nadu,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Tamil Nadu,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Tamil Nadu,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Telangana,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Telangana,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Telangana,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Telangana,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Telangana,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Telangana,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Uttar Pradesh,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Uttar Pradesh,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Uttar Pradesh,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Uttar Pradesh,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Uttar Pradesh,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Uttar Pradesh,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+Uttarakhand,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+Uttarakhand,Black,200,350,20,40,250,500,6.0,8.5,50,80
+Uttarakhand,Red,150,300,10,25,100,250,5.5,7.0,30,60
+Uttarakhand,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+Uttarakhand,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+Uttarakhand,Mountain,180,300,15,35,150,280,5.5,7.0,40,70
+West Bengal,Alluvial,250,400,15,30,150,300,6.5,7.8,40,70
+West Bengal,Black,200,350,20,40,250,500,6.0,8.5,50,80
+West Bengal,Red,150,300,10,25,100,250,5.5,7.0,30,60
+West Bengal,Laterite,100,250,8,20,80,200,4.5,6.5,60,90
+West Bengal,Arid,80,200,5,15,100,220,7.0,8.8,15,35
+West Bengal,Mountain,180,300,15,35,150,280,5.5,7.0,40,70

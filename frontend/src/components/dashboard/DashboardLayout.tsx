@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Wheat, Brain, CloudSun,
-  Bell, FileText, Settings, Menu, X, Home, ArrowLeft
+  Bell, FileText, Settings, Menu, X, ArrowLeft
 } from "lucide-react";
 import { useState } from "react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -43,8 +43,9 @@ export default function DashboardLayout() {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
+        {/* Logo header */}
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4 shrink-0">
-          <img src="/crop-logo.jpg" alt="Crop Advisor" className="h-9 w-9 rounded-full object-cover border-2 border-primary/20" />
+          <img src="/logo.svg" alt="Crop Advisor" className="h-8 w-8" />
           <span className="font-heading text-base font-bold text-sidebar-foreground">Crop Advisor</span>
           <button className="ml-auto md:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
@@ -58,7 +59,6 @@ export default function DashboardLayout() {
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors border border-sidebar-border/50"
           >
             <ArrowLeft className="h-4 w-4" />
-            <Home className="h-4 w-4" />
             <span>{t("backToHome")}</span>
           </Link>
         </div>
