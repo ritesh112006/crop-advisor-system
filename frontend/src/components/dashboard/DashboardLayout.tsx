@@ -43,9 +43,8 @@ export default function DashboardLayout() {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        {/* Logo header */}
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4 shrink-0">
-          <img src="/logo.svg" alt="Crop Advisor" className="h-8 w-8" />
+          <img src="/crop-logo.jpg" alt="Crop Advisor" className="h-9 w-9 rounded-full object-cover border-2 border-primary/20" />
           <span className="font-heading text-base font-bold text-sidebar-foreground">Crop Advisor</span>
           <button className="ml-auto md:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />

@@ -1,350 +1,328 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Mic, MicOff, Image, Volume2 } from "lucide-react";
+import { MessageCircle, X, Send, Mic, MicOff, ImageIcon, Loader2, Sparkles } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import ReactMarkdown from "react-markdown";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type Msg = { role: "user" | "assistant"; content: string; image?: string };
 
-// Farm context data for the chatbot to analyze
+const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
+const genAI = GEMINI_KEY ? new GoogleGenerativeAI(GEMINI_KEY) : null;
+
+// ─── Farm sensor context ───────────────────────────────────
 function getFarmContext() {
-  const selectedCrops = (() => {
+  const crops = (() => {
     try { return JSON.parse(localStorage.getItem("selectedCrops") || "[]"); } catch { return []; }
   })();
-  const farmerName = localStorage.getItem("farmerName") || "Farmer";
-  const soilType = localStorage.getItem("soilType") || "Unknown";
-  const farmLocation = localStorage.getItem("farmLocation") || "Unknown";
-
   return {
-    farmerName,
-    soilType,
-    farmLocation,
-    crops: selectedCrops.map((c: any) => c.crop).join(", ") || "not selected yet",
-    sensorData: {
-      nitrogen: 72,
-      phosphorus: 38,
-      potassium: 46,
-      moisture: 55,
-      ph: 6.8,
-      temperature: 28.4,
-      humidity: 68,
-    },
-    cropHealthScore: 82,
-    activeAlerts: ["Soil moisture dropping — irrigation needed in 2 days", "Phosphorus slightly below optimal"],
-    lastReportStatus: "Good (Score: 78/100)",
+    farmerName: localStorage.getItem("farmerName") || "Farmer",
+    state: localStorage.getItem("farmerLocation") || "India",
+    soilType: localStorage.getItem("soilType") || "Loamy",
+    crops: crops.map((c: any) => c.crop).join(", ") || "not selected yet",
+    N: 72, P: 38, K: 46, moisture: 55, ph: 6.8, temp: 28.4, humidity: 68,
+    healthScore: 82,
+    alerts: ["Soil moisture dropping — irrigation needed", "Phosphorus slightly below optimal"],
   };
 }
 
-function buildSystemPrompt() {
+function buildSystemPrompt(imageIncluded: boolean) {
   const ctx = getFarmContext();
-  return `You are CropAdvisor AI — an expert agricultural assistant. You have access to real-time farm sensor data and analytics. Always analyze the farmer's data before answering.
+  return `You are **CropAdvisor AI** — an expert agricultural assistant for Indian farmers. You have live access to the farmer's sensor data and farm analytics.
 
-FARMER INFO:
+**FARMER PROFILE:**
 - Name: ${ctx.farmerName}
-- Location: ${ctx.farmLocation}
+- Location/State: ${ctx.state}
 - Soil Type: ${ctx.soilType}
-- Selected Crops: ${ctx.crops}
+- Crops Growing: ${ctx.crops}
 
-LIVE SENSOR READINGS:
-- Nitrogen (N): ${ctx.sensorData.nitrogen} mg/kg (Optimal: 60–90)
-- Phosphorus (P): ${ctx.sensorData.phosphorus} mg/kg (Optimal: 30–55)
-- Potassium (K): ${ctx.sensorData.potassium} mg/kg (Optimal: 40–60)
-- Soil Moisture: ${ctx.sensorData.moisture}% (Optimal: 40–70%)
-- Soil pH: ${ctx.sensorData.ph} (Optimal: 6.0–7.5)
-- Temperature: ${ctx.sensorData.temperature}°C
-- Humidity: ${ctx.sensorData.humidity}%
+**LIVE SOIL SENSOR READINGS:**
+- Nitrogen (N): ${ctx.N} mg/kg ${ctx.N < 60 ? "⚠️ LOW" : ctx.N > 90 ? "⚠️ HIGH" : "✅ OK"} (Optimal: 60–90)
+- Phosphorus (P): ${ctx.P} mg/kg ${ctx.P < 30 ? "⚠️ LOW" : ctx.P > 55 ? "⚠️ HIGH" : "✅ OK"} (Optimal: 30–55)
+- Potassium (K): ${ctx.K} mg/kg ${ctx.K < 40 ? "⚠️ LOW" : ctx.K > 60 ? "⚠️ HIGH" : "✅ OK"} (Optimal: 40–60)
+- Soil Moisture: ${ctx.moisture}% (Optimal: 40–70%)
+- Soil pH: ${ctx.ph} (Optimal: 6.0–7.5)
+- Temperature: ${ctx.temp}°C | Humidity: ${ctx.humidity}%
 
-CROP HEALTH SCORE: ${ctx.cropHealthScore}/100
-ACTIVE ALERTS: ${ctx.activeAlerts.join("; ")}
-LAST MONTH SOIL REPORT: ${ctx.lastReportStatus}
+**CROP HEALTH SCORE:** ${ctx.healthScore}/100
+**ACTIVE ALERTS:** ${ctx.alerts.join("; ")}
 
-Based on this data, always provide personalized, data-driven advice. When farmer asks about their crops/soil/weather — reference actual sensor readings. Answer in the farmer's language (Hindi if they write in Hindi, etc.). Keep answers concise but actionable. Use bullet points for steps.`;
+${imageIncluded ? "**The farmer has also shared an image of their crop/field — analyze it for disease, pest damage, or growth issues.**" : ""}
+
+**YOUR BEHAVIOR:**
+- Always analyze the farmer's ACTUAL sensor data before answering
+- Provide specific, actionable advice (exact fertilizer amounts, timing, application method)
+- Detect problems from sensor readings and warn proactively
+- Answer in the SAME language the farmer uses (Hindi → Hindi, English → English, etc.)
+- If asked about crops, always reference the actual sensor readings
+- Format responses cleanly with bullet points and bold headings
+- Be conversational and friendly — like a trusted farm advisor
+
+IMPORTANT: Never say you don't have access to data. Use the sensor data above to give personalized answers.`;
 }
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+// ─── Quick suggestion chips ────────────────────────────────
+const QUICK_CHIPS = [
+  "Soil health check",
+  "When to irrigate?",
+  "Fertilizer advice",
+  "Pest & disease help",
+  "Best crop for my soil",
+  "Market price trend",
+];
 
-export function ChatBot() {
+export default function ChatBot() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+  const chatRef = useRef<any>(null);
+
+  const ctx = getFarmContext();
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
-  // Voice recognition setup
-  const startListening = () => {
+  // Initialize chat session when opened
+  useEffect(() => {
+    if (open && messages.length === 0) {
+      setMessages([{
+        role: "assistant",
+        content: `🌱 **Hello ${ctx.farmerName}!** I am your **CropAdvisor AI** — powered by Gemini.\n\nI can see your live farm data:\n- **N:** ${ctx.N} | **P:** ${ctx.P} | **K:** ${ctx.K} mg/kg\n- **Moisture:** ${ctx.moisture}% | **pH:** ${ctx.ph} | **Temp:** ${ctx.temp}°C\n- **Crops:** ${ctx.crops}\n\nAsk me anything about your farm — soil, crops, irrigation, pests, or market prices! 🌾`
+      }]);
+    }
+  }, [open]);
+
+  // Create or get Gemini chat session
+  async function getGeminiChat(withImage: boolean) {
+    if (!genAI) return null;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const chat = model.startChat({
+      history: messages
+        .filter(m => m.role !== "assistant" || messages.indexOf(m) > 0)
+        .slice(-10) // last 10 messages for context
+        .map(m => ({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.content }],
+        })),
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 1024,
+      },
+      systemInstruction: buildSystemPrompt(withImage),
+    });
+    return chat;
+  }
+
+  async function sendMessage(text?: string, chip?: string) {
+    const userText = text || chip || input.trim();
+    if (!userText && !imageBase64) return;
+    if (loading) return;
+
+    const userMsg: Msg = { role: "user", content: userText, image: imagePreview || undefined };
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+    setImagePreview(null);
+    setLoading(true);
+
+    try {
+      if (!genAI) throw new Error("Gemini API key not configured");
+
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      // Build full prompt with system context
+      const systemPrompt = buildSystemPrompt(!!imageBase64);
+      let parts: any[] = [{ text: systemPrompt + "\n\n---\n\nFarmer asks: " + userText }];
+
+      // Add image if present
+      if (imageBase64) {
+        parts = [
+          { text: systemPrompt + "\n\n---\n\nFarmer asks: " + userText + "\n\n[Image attached — please analyze it]" },
+          { inlineData: { mimeType: "image/jpeg", data: imageBase64 } }
+        ];
+      }
+
+      // Add conversation history as context
+      const historyContext = messages.slice(-6).map(m =>
+        `${m.role === "user" ? "Farmer" : "CropAdvisor AI"}: ${m.content}`
+      ).join("\n");
+      if (historyContext) {
+        parts[0].text = systemPrompt + "\n\n---\n\nPrevious conversation:\n" + historyContext + "\n\n---\n\nFarmer asks: " + userText;
+      }
+
+      const result = await model.generateContent(parts);
+      const response = result.response.text();
+
+      setMessages(prev => [...prev, { role: "assistant", content: response }]);
+    } catch (err: any) {
+      console.error("Gemini error:", err);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: `⚠️ **Connection error.** Please check your internet connection.\n\n*Error: ${err.message || "Unknown error"}*`
+      }]);
+    } finally {
+      setLoading(false);
+      setImageBase64(null);
+    }
+  }
+
+  // Voice input
+  function toggleVoice() {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Voice input not supported in this browser. Please use Chrome.");
+    if (!SpeechRecognition) return;
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
       return;
     }
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = "hi-IN";
-    recognition.onresult = (e: any) => {
+    const rec = new SpeechRecognition();
+    rec.lang = "hi-IN";
+    rec.interimResults = false;
+    rec.onresult = (e: any) => {
       const transcript = e.results[0][0].transcript;
-      setInput((prev) => prev + transcript);
-      setIsListening(false);
+      setInput(transcript);
+      setListening(false);
     };
-    recognition.onerror = () => setIsListening(false);
-    recognition.onend = () => setIsListening(false);
-    recognitionRef.current = recognition;
-    recognition.start();
-    setIsListening(true);
-  };
-
-  const stopListening = () => {
-    recognitionRef.current?.stop();
-    setIsListening(false);
-  };
+    rec.onend = () => setListening(false);
+    rec.start();
+    recognitionRef.current = rec;
+    setListening(true);
+  }
 
   // Image upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result as string);
+    reader.onload = (ev) => {
+      const result = ev.target?.result as string;
+      setImagePreview(result);
+      // Extract base64 (remove data:image/...;base64, prefix)
+      const base64 = result.split(",")[1];
+      setImageBase64(base64);
     };
     reader.readAsDataURL(file);
-  };
-
-  const send = async () => {
-    if ((!input.trim() && !imagePreview) || isLoading) return;
-
-    const userContent = input.trim() || (imagePreview ? "[Image uploaded — please analyze this crop/soil issue]" : "");
-    const userMsg: Msg = { role: "user", content: userContent, image: imagePreview || undefined };
-    const allMessages = [...messages, userMsg];
-    setMessages(allMessages);
-    setInput("");
-    setImagePreview(null);
-    setIsLoading(true);
-
-    let assistantSoFar = "";
-
-    try {
-      // Build the system-aware messages
-      const systemMessage = { role: "system", content: buildSystemPrompt() };
-      const apiMessages = [systemMessage, ...allMessages.map((m) => ({
-        role: m.role,
-        content: m.image
-          ? `${m.content}\n[Farmer uploaded an image of their crop/farm for analysis]`
-          : m.content,
-      }))];
-
-      const resp = await fetch(CHAT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ messages: apiMessages }),
-      });
-
-      if (!resp.ok || !resp.body) {
-        // Fallback: generate a context-aware response
-        const ctx = getFarmContext();
-        const fallbackResp = `Based on your farm data:
-- **Soil Health**: ${ctx.cropHealthScore}/100 (${ctx.lastReportStatus})
-- **N**: ${ctx.sensorData.nitrogen} mg/kg | **P**: ${ctx.sensorData.phosphorus} mg/kg | **K**: ${ctx.sensorData.potassium} mg/kg
-- **Moisture**: ${ctx.sensorData.moisture}% | **pH**: ${ctx.sensorData.ph}
-
-**Active Alerts**: ${ctx.activeAlerts.join("; ")}
-
-For your crops (${ctx.crops}), I recommend monitoring phosphorus levels and ensuring irrigation within 2 days. Ask me specific questions about your farm!`;
-        setMessages((prev) => [...prev, { role: "assistant", content: fallbackResp }]);
-        setIsLoading(false);
-        return;
-      }
-
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let textBuffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        textBuffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              assistantSoFar += content;
-              setMessages((prev) => {
-                const last = prev[prev.length - 1];
-                if (last?.role === "assistant") {
-                  return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
-                }
-                return [...prev, { role: "assistant", content: assistantSoFar }];
-              });
-            }
-          } catch {
-            textBuffer = line + "\n" + textBuffer;
-            break;
-          }
-        }
-      }
-    } catch (e: any) {
-      const ctx = getFarmContext();
-      const contextAnswer = `I'm analyzing your farm data. Your soil health score is **${ctx.cropHealthScore}/100**. Current alerts: **${ctx.activeAlerts.join("; ")}**. Your soil pH is ${ctx.sensorData.ph} (optimal). Ask me specific questions!`;
-      setMessages((prev) => [...prev, { role: "assistant", content: contextAnswer }]);
-    }
-
-    setIsLoading(false);
-  };
+    e.target.value = "";
+  }
 
   return (
     <>
       {/* Floating button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all hover:scale-110 hover:shadow-2xl"
-        aria-label="Chat"
-      >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
-        {!open && messages.length === 0 && (
-          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[9px] text-white flex items-center justify-center font-bold">AI</span>
-        )}
-      </button>
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-2xl hover:scale-110 transition-transform"
+        >
+          <img src="/crop-logo.jpg" alt="AI Chat" className="h-9 w-9 rounded-full object-cover" />
+        </button>
+      )}
 
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[32rem] w-[22rem] flex-col rounded-xl border bg-card shadow-2xl sm:w-[26rem]">
+        <div className="fixed bottom-6 right-6 z-50 flex w-[360px] max-w-[calc(100vw-1.5rem)] flex-col rounded-2xl border bg-card shadow-2xl overflow-hidden"
+          style={{ height: "540px" }}>
           {/* Header */}
-          <div className="flex items-center gap-2 rounded-t-xl bg-primary px-4 py-3">
-            <MessageCircle className="h-5 w-5 text-primary-foreground" />
+          <div className="flex items-center gap-3 bg-primary px-4 py-3 text-primary-foreground">
+            <img src="/crop-logo.jpg" alt="Crop Advisor" className="h-8 w-8 rounded-full object-cover border-2 border-white/30" />
             <div className="flex-1">
-              <h3 className="font-heading text-sm font-semibold text-primary-foreground">{t("chatbotTitle")}</h3>
-              <p className="text-xs text-primary-foreground/70">Analyzing your live farm data</p>
+              <p className="text-sm font-bold leading-none">CropAdvisor AI</p>
+              <p className="text-[10px] opacity-80 flex items-center gap-1">
+                <Sparkles className="h-2.5 w-2.5" /> Powered by Gemini — Farm-Aware
+              </p>
             </div>
-            <Volume2 className="h-4 w-4 text-primary-foreground/70" />
+            <button onClick={() => setOpen(false)} className="opacity-70 hover:opacity-100">
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
-          {/* Farm data chip */}
-          <div className="border-b bg-muted/50 px-3 py-1.5 flex items-center gap-2 flex-wrap">
-            {["N:72", "P:38", "K:46", "pH:6.8", "H₂O:55%"].map((chip) => (
-              <span key={chip} className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-mono font-medium text-primary">
-                {chip}
-              </span>
+          {/* Sensor chips */}
+          <div className="flex gap-1.5 overflow-x-auto px-3 py-2 border-b bg-muted/30 text-[10px] font-mono">
+            {[`N:${ctx.N}`, `P:${ctx.P}`, `K:${ctx.K}`, `pH:${ctx.ph}`, `H₂O:${ctx.moisture}%`, `${ctx.temp}°C`].map(chip => (
+              <span key={chip} className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-primary font-semibold">{chip}</span>
             ))}
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-3">
-            {messages.length === 0 && (
-              <div className="rounded-xl bg-muted p-3 text-sm text-muted-foreground">
-                {t("chatbotWelcome")}
-                <div className="mt-2 space-y-1">
-                  {["What should I water today?", "Is my soil healthy?", "When to apply fertilizer?"].map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => { setInput(q); }}
-                      className="block w-full text-left text-xs text-primary hover:underline"
-                    >
-                      💬 {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
             {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}>
-                  {msg.image && (
-                    <img src={msg.image} alt="Uploaded" className="mb-2 max-h-32 rounded-lg object-cover w-full" />
-                  )}
-                  {msg.role === "assistant" ? (
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </div>
-                  ) : msg.content}
+              <div key={i} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+                {msg.role === "assistant" && (
+                  <img src="/crop-logo.jpg" className="h-6 w-6 rounded-full object-cover shrink-0 mt-1" alt="AI" />
+                )}
+                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${msg.role === "user"
+                  ? "bg-primary text-primary-foreground rounded-tr-sm"
+                  : "bg-muted rounded-tl-sm"}`}>
+                  {msg.image && <img src={msg.image} className="mb-2 rounded-lg max-h-32 object-cover" alt="uploaded" />}
+                  <div className="prose prose-sm max-w-none dark:prose-invert">
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
                 </div>
               </div>
             ))}
-            {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-              <div className="flex justify-start">
-                <div className="rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground">
-                  <span className="inline-flex gap-1">
-                    <span className="animate-bounce [animation-delay:.0s]">●</span>
-                    <span className="animate-bounce [animation-delay:.15s]">●</span>
-                    <span className="animate-bounce [animation-delay:.3s]">●</span>
-                  </span>
+            {loading && (
+              <div className="flex gap-2">
+                <img src="/crop-logo.jpg" className="h-6 w-6 rounded-full object-cover shrink-0 mt-1" alt="AI" />
+                <div className="bg-muted rounded-2xl rounded-tl-sm px-3 py-2 flex items-center gap-2">
+                  <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                  <span className="text-xs text-muted-foreground">Thinking...</span>
                 </div>
               </div>
             )}
-            <div ref={bottomRef} />
+            <div ref={messagesEndRef} />
           </div>
+
+          {/* Quick chips */}
+          {messages.length <= 1 && (
+            <div className="flex gap-1.5 overflow-x-auto px-3 py-2 border-t">
+              {QUICK_CHIPS.map(chip => (
+                <button key={chip} onClick={() => sendMessage(chip)}
+                  className="shrink-0 rounded-full border bg-muted px-2.5 py-1 text-[11px] hover:bg-primary/10 hover:border-primary transition-colors">
+                  {chip}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Image preview */}
           {imagePreview && (
-            <div className="border-t px-3 py-2 flex items-center gap-2">
-              <img src={imagePreview} alt="Preview" className="h-12 w-12 rounded-lg object-cover" />
-              <p className="text-xs text-muted-foreground flex-1">Image attached</p>
-              <button onClick={() => setImagePreview(null)} className="text-xs text-red-500 hover:underline">Remove</button>
+            <div className="relative mx-3 mb-1">
+              <img src={imagePreview} alt="preview" className="h-16 rounded-lg object-cover border" />
+              <button onClick={() => { setImagePreview(null); setImageBase64(null); }}
+                className="absolute -top-1 -right-1 rounded-full bg-destructive text-white p-0.5">
+                <X className="h-3 w-3" />
+              </button>
             </div>
           )}
 
           {/* Input */}
-          <div className="border-t p-3">
-            <form onSubmit={(e) => { e.preventDefault(); send(); }} className="flex items-center gap-2">
-              {/* Image upload button */}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                title="Upload crop image"
-              >
-                <Image className="h-4 w-4" />
-              </button>
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-
-              {/* Text input */}
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={t("chatbotPlaceholder")}
-                className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-
-              {/* Mic button */}
-              <button
-                type="button"
-                onClick={isListening ? stopListening : startListening}
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors ${isListening ? "bg-red-100 border-red-300 text-red-600 animate-pulse" : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                  }`}
-                title={isListening ? "Stop listening" : "Voice input"}
-              >
-                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-              </button>
-
-              {/* Send button */}
-              <button
-                type="submit"
-                disabled={isLoading || (!input.trim() && !imagePreview)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50 hover:bg-primary/90 transition-colors"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
+          <div className="flex items-center gap-2 border-t p-3">
+            <input type="file" ref={fileRef} accept="image/*" className="hidden" onChange={handleImage} />
+            <button onClick={() => fileRef.current?.click()}
+              className="text-muted-foreground hover:text-primary transition-colors shrink-0">
+              <ImageIcon className="h-5 w-5" />
+            </button>
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()}
+              placeholder={t("chatbotPlaceholder") || "Ask about your farm..."}
+              className="flex-1 rounded-full border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <button onClick={toggleVoice}
+              className={`shrink-0 transition-colors ${listening ? "text-red-500" : "text-muted-foreground hover:text-primary"}`}>
+              {listening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+            </button>
+            <button onClick={() => sendMessage()} disabled={loading || (!input.trim() && !imageBase64)}
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40">
+              <Send className="h-4 w-4" />
+            </button>
           </div>
         </div>
       )}
